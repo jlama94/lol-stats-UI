@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import {SummonerData} from '../../model/summoner-data';
 import {Observable} from 'rxjs';
+import {MatchDataResponse} from '../../model/MatchDataResponse';
 
 
 const httpOptions = {
@@ -18,14 +18,15 @@ const httpOptions = {
 export class MatchesService {
 
 
-  constructor(private httpClient: HttpClient) {}
-
-  // getSummonerMatchData(): Observable <SummonerData> {
-  //   return this.httpClient.get<SummonerData>('http://localhost:9090/matches/pTeemo', httpOptions);
-  // }
+  constructor (private httpClient: HttpClient) {
+  }
 
 
-  getSummonerData(): Observable<SummonerData> {
-    return this.httpClient.get<SummonerData>('http://localhost:9090/summonerLeagueWeb/pteemo', httpOptions);
+  getSummonerData (): Observable<MatchDataResponse> {
+    return this.httpClient.get<any>('http://localhost:9090/summonerLeagueWebV2/pteemo', httpOptions);
+  }
+
+  getRecentDates (): Observable<[string]> {
+    return this.httpClient.get<[string]>('http://localhost:9090/recentDates/pteemo', httpOptions);
   }
 }

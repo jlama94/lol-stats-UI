@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {MatchesService} from '../httpClient/services/matches.service';
-import {SummonerData} from '../model/summoner-data';
-import {Match} from '../model/match';
 
 
 @Component({
@@ -20,9 +18,7 @@ export class HomeComponent implements OnInit {
 
   isChartReady = false;
 
-  champions: [Match];
 
-  summonerData: SummonerData; // object holding values from backend
 
 
 
@@ -31,22 +27,5 @@ export class HomeComponent implements OnInit {
 
   ngOnInit () {
     // this.setData('bar');
-  }
-
-
-  setData (bartype: string) {
-    this.matchService.getSummonerData().subscribe(response => {
-      // console.log(response);
-      this.summonerData = response;
-
-      this.champions = this.summonerData.matches;
-
-
-      console.log(this.champions);
-
-    }, error => {
-      console.log('Could not get data from service.');
-    });
-
   }
 }
