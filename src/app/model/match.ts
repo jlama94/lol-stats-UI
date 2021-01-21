@@ -1,3 +1,4 @@
 export interface Match {
-  string?: number[];
+  data?: number[];
+  label?: string;
 }

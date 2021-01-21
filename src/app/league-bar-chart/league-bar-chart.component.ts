@@ -4,6 +4,7 @@ import {Label} from 'ng2-charts';
 import {MatchesService} from '../httpClient/services/matches.service';
 import {MatchDataResponse} from '../model/MatchDataResponse';
 import {JsonConvert} from 'json2typescript';
+import {Match} from '../model/match';
 
 @Component({
   selector: 'app-league-bar-chart',
@@ -27,8 +28,6 @@ import {JsonConvert} from 'json2typescript';
 
 export class LeagueBarChartComponent implements OnInit {
 
-  public jsonConverter: JsonConvert = new JsonConvert();
-
   public barChartOptions: ChartOptions = {
     responsive: true
   };
@@ -39,10 +38,7 @@ export class LeagueBarChartComponent implements OnInit {
 
 
   // variables.
-  championNames: Array<any> = [];
   isChartReady: boolean;
-  dates: Array<any> = [];
-  userName: string;
 
 
   /*
@@ -70,32 +66,52 @@ export class LeagueBarChartComponent implements OnInit {
   }
 
 
-  setDates() {
-    if (this.barChartLabels === null) {
-      this.isChartReady = false;
-    }
-    this.service.getRecentDates().subscribe(sevenDatesArray =>  {
-      this.barChartLabels = sevenDatesArray;
-    });
-  }
-
-
   setData() {
-    this.setDates();
-
-
-    this.service.getSummonerData().subscribe((value) => {
-      const response: MatchDataResponse = this.jsonConverter.deserializeObject(value, MatchDataResponse);
-      console.log(response);
+    this.service.getRecentDates().subscribe((stringArray: [string]) => {
+      this.barChartLabels = stringArray;
     });
 
+    /*This works */
 
-    // this.barChartData.push({
-    //   data: [1, 2, 3, 4,],
-    //   label: "okay"
+    this.service.getSummonerData().subscribe((value => {
+      for (const key of Object.keys(value)) {
+        const tempResult = value[key]; // <- [ {data: [1,2,2,3], label: 'Teemo'} ]
+        // console.log(tempResult);
+        this.barChartData = tempResult;
+      }
+      if (this.barChartData != null && this.barChartLabels != null) {
+        this.isChartReady = true;
+      }
+    }));
+
+
+
+    // this.service.getSummonerData().subscribe((matchDataResponse: MatchDataResponse) => {
+    //   /*
+    //   {
+    //     response: [ {data:[], label: ''} ]
+    //   }
+    //   */
+    //
+    //   this.barChartData = matchDataResponse.matches;   // does not work.
+    //   if (this.barChartData != null) {
+    //     this.isChartReady = true;
+    //   }
     // });
-    // if (this.barChartData !== null) {
+
+
+
+
+    // this.service.getSummonerData().subscribe((arrayData: Match[]) => {
+    //   for (let key of Object.keys(arrayData)) {
+    //     let timesPlayed = arrayData[key];
+    //     this.barChartData.push({
+    //       label: key,
+    //       data: timesPlayed
+    //     });
+    //     console.log(key, timesPlayed);
+    //   }
     //   this.isChartReady = true;
-    // }
+    // });
   }
 }

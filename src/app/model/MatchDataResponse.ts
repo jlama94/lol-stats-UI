@@ -3,7 +3,7 @@
  */
 import {Match} from './match';
 
-export class MatchDataResponse {
-  matches?: [Match];
+export interface MatchDataResponse {
+  matches?: Match[];
 }
 
