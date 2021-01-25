@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
-import { Label } from 'ng2-charts';
+import {Component, OnInit} from '@angular/core';
+import {ChartDataSets, ChartOptions, ChartTitleOptions, ChartType} from 'chart.js';
+import {Label} from 'ng2-charts';
 import {MatchesService} from '../httpClient/services/matches.service';
 
 @Component({
@@ -9,122 +9,81 @@ import {MatchesService} from '../httpClient/services/matches.service';
   styleUrls: ['./league-bar-chart.component.css']
 })
 
-/**
- *  Problemas:
- *  - Muchos juegos durante el mismo dia.
- *  - Campeones deberian ser tipo String no tipo numero.
- *
- *
- *
- * Ideas:
- * - Agrupar todos los matches de cada dia.
- * - Linkear el numero del champion con su nombre.
- * - Series deberian ser los champion names.
- * - barChartLabels deberian ser Dates.
- *
- *
- *
- *
- *
- *
- */
-
 export class LeagueBarChartComponent implements OnInit {
 
-  public barChartOptions: ChartOptions = {
-    responsive: true,
-  };
   public barChartLabels: Label[] = []; // should be dates.
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
-  public barChartPlugins = [];
 
-
-  // variables.
-  championNames: Array<any> = [];
   isChartReady: boolean;
-  dates: Array<any> = [];
-  userName: string;
 
 
+  public barChartData: ChartDataSets[] = [];
 
-  public barChartData: ChartDataSets[] = [
 
-/*
-    {
-      data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'
-    },
+  public titleOptions: ChartTitleOptions = {
+    text: 'League of Legends Stats',
+    display: true,
+    position: 'top'
+  };
 
-    {
-      data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B'
+
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    title: this.titleOptions,
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+            /*
+              This function
+              Change the Y-axis values from real numbers to integers in Chart.js
+              https://stackoverflow.com/a/38945591/6029771
+             */
+            callback (value: any, index: any, values: any): string | number {
+              if (value % 1 === 0) {
+                return value;
+              }
+            }
+          }
+        }
+      ],
+
+      xAxes: [
+        {
+          display: true
+        }
+      ],
+      gridLines: {
+        lineWidth: 2.0
+      }
     }
- */
-
-    {
-      /*
-      Example: On monday I played 'x' champ 4 times, tuesday I played same champ 7 times... so on.
-          A[4], A[7]
+  };
 
 
-      So each serie should be a data array where each slot is the number of times
-      I played that champion, and the label is just the champion name,
+  constructor (private service: MatchesService) {
+  }
 
-
-      From the backend:
-        - An array of strings representing the dates (7 dates).
-        - Array storing in each slot the number of times champion played per day.
-
-        A Map? Map<String[], String>
-            -----> [12, 3, 4, 5], Teemo
-
-
-       */
-
-      data: [4, 7, 0, 2], label: 'Teemo'
-    },
-
-    {
-      data: [2, 1, 8, 4], label: 'Janna'
-    }
-
-
-
-
-  ];
-
-
-
-
-  constructor(private service: MatchesService) { }
-
-  ngOnInit() {
-
+  ngOnInit () {
   }
 
 
-  setDates() {
-    const datesArray: Array<string> =
-      ['02/12/2020', '02/13/2020', '02/14/2020', '02/15/2020', '02/16/2020', '02/17/2020', '02/18/2020'];
-    if (datesArray === null) {
-      this.isChartReady = false;
-    }
-
-    for (let date  of datesArray) {
-      this.barChartLabels.push(date);
-    }
-
-    this.isChartReady = true;
-  }
-
-  setData() {
-    this.service.getSummonerData().subscribe(value => {
-      value.matches.forEach(match => {
-//        console.log('Champion ID: ' + match.champion);
-        this.championNames.push(match.champion);
-      });
-    }, error => {
-      console.log('Cannot retrieve: ' + error);
+  setData () {
+    this.service.getRecentDates().subscribe((stringArray: [string]) => {
+      this.barChartLabels = stringArray;
     });
-  }
 
+    this.service.getSummonerData().subscribe((value => {
+      for (const key of Object.keys(value)) {
+        const tempResult = value[key]; // <- [ {data: [1,2,2,3], label: 'Teemo'} ]
+        // console.log(tempResult);
+        this.barChartData = tempResult;
+      }
+      if (this.barChartData != null && this.barChartLabels != null) {
+        this.isChartReady = true;
+      }
+    }));
+  }
 }
