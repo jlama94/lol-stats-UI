@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ChartDataSets, ChartOptions, ChartTitleOptions, ChartType} from 'chart.js';
-import {Label} from 'ng2-charts';
 import {MatchesService} from '../httpClient/services/matches.service';
+import {MatchDataResponse} from '../model/MatchDataResponse';
 
 @Component({
   selector: 'app-league-bar-chart',
@@ -11,7 +11,7 @@ import {MatchesService} from '../httpClient/services/matches.service';
 
 export class LeagueBarChartComponent implements OnInit {
 
-  public barChartLabels: Label[] = []; // should be dates.
+  public barChartLabels: string[] = []; // should be dates.
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
 
@@ -22,9 +22,10 @@ export class LeagueBarChartComponent implements OnInit {
 
 
   public titleOptions: ChartTitleOptions = {
-    text: 'League of Legends Stats',
+    text: 'Champions Played in the Last Seven Days',
     display: true,
-    position: 'top'
+    position: 'top',
+    fontSize: 20
   };
 
 
@@ -47,7 +48,8 @@ export class LeagueBarChartComponent implements OnInit {
                 return value;
               }
             }
-          }
+          },
+          display: true
         }
       ],
 
@@ -57,7 +59,7 @@ export class LeagueBarChartComponent implements OnInit {
         }
       ],
       gridLines: {
-        lineWidth: 2.0
+        lineWidth: 3.0
       }
     }
   };
@@ -70,20 +72,39 @@ export class LeagueBarChartComponent implements OnInit {
   }
 
 
-  setData () {
-    this.service.getRecentDates().subscribe((stringArray: [string]) => {
-      this.barChartLabels = stringArray;
-    });
+  /*
+dateLabels: Array(7)
+    0: "2021-01-27"
+    1: "2021-01-28"
+    2: "2021-01-29"
+    3: "2021-01-30"
+    4: "2021-01-31"
+    5: "2021-02-01"
+    6: "2021-02-02"
+    length: 7
+    __proto__: Array(0)
+    response: Array(23)
+    0: {data: Array(7), label: "37"}
+    1: {data: Array(7), label: "40"}
+    2: {data: Array(7), label: "202"}
+    3: {data: Array(7), label: "235"}
+    4: {data: Array(7), label: "875"}
+    5: {data: Array(7), label: "267"}
+    6: {data: Array(7), label: "15"}
+ */
+  setChartData () {
+    this.service.getSummonerData().subscribe((value: MatchDataResponse) => {
+      const chartDataSet = Object.values(value)[0];
+      this.barChartData = chartDataSet;
 
-    this.service.getSummonerData().subscribe((value => {
-      for (const key of Object.keys(value)) {
-        const tempResult = value[key]; // <- [ {data: [1,2,2,3], label: 'Teemo'} ]
-        // console.log(tempResult);
-        this.barChartData = tempResult;
-      }
+      const dateLabelsString = Object.values(value)[1];
+      this.barChartLabels = dateLabelsString;
+
       if (this.barChartData != null && this.barChartLabels != null) {
         this.isChartReady = true;
       }
-    }));
+    }, error =>  {
+      console.log(error);
+    });
   }
 }
