@@ -22,7 +22,7 @@ export class LeagueBarChartComponent implements OnInit {
 
 
   public titleOptions: ChartTitleOptions = {
-    text: 'Champions Played in the Last Seven Days',
+    text: 'Champions Played in the Past Seven Days',
     display: true,
     position: 'top',
     fontSize: 20
