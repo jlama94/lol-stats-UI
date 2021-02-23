@@ -72,26 +72,6 @@ export class LeagueBarChartComponent implements OnInit {
   }
 
 
-  /*
-dateLabels: Array(7)
-    0: "2021-01-27"
-    1: "2021-01-28"
-    2: "2021-01-29"
-    3: "2021-01-30"
-    4: "2021-01-31"
-    5: "2021-02-01"
-    6: "2021-02-02"
-    length: 7
-    __proto__: Array(0)
-    response: Array(23)
-    0: {data: Array(7), label: "37"}
-    1: {data: Array(7), label: "40"}
-    2: {data: Array(7), label: "202"}
-    3: {data: Array(7), label: "235"}
-    4: {data: Array(7), label: "875"}
-    5: {data: Array(7), label: "267"}
-    6: {data: Array(7), label: "15"}
- */
   setChartData () {
     this.service.getSummonerData().subscribe((value: MatchDataResponse) => {
       const chartDataSet = Object.values(value)[0];
@@ -103,7 +83,7 @@ dateLabels: Array(7)
       if (this.barChartData != null && this.barChartLabels != null) {
         this.isChartReady = true;
       }
-    }, error =>  {
+    }, error => {
       console.log(error);
     });
   }
