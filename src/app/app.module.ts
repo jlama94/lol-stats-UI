@@ -9,13 +9,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { MatchesService } from './httpClient/services/matches.service';
 import { LeagueBarChartComponent } from './league-bar-chart/league-bar-chart.component';
+import { StackedBarChartComponent } from './stacked-bar-chart/stacked-bar-chart.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    LeagueBarChartComponent
+    LeagueBarChartComponent,
+    StackedBarChartComponent
   ],
   imports: [
     BrowserModule,
