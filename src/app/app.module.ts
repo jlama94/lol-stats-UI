@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { MatchesService } from './httpClient/services/matches.service';
 import { LeagueBarChartComponent } from './league-bar-chart/league-bar-chart.component';
 import { StackedBarChartComponent } from './stacked-bar-chart/stacked-bar-chart.component';
+import { MenuBarComponent } from './menu-bar/menu-bar.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { StackedBarChartComponent } from './stacked-bar-chart/stacked-bar-chart.
     AppComponent,
     HomeComponent,
     LeagueBarChartComponent,
-    StackedBarChartComponent
+    StackedBarChartComponent,
+    MenuBarComponent
   ],
   imports: [
     BrowserModule,
