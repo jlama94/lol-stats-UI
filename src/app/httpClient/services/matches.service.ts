@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
 import {MatchDataResponse} from '../../model/MatchDataResponse';
+import {MatchHistory} from '../../model/match-history';
 
 
 const httpOptions = {
@@ -22,5 +23,9 @@ export class MatchesService {
 
   getSummonerData (): Observable<MatchDataResponse> {
     return this.httpClient.get<MatchDataResponse>('http://localhost:9090/summonerLeagueWebV2/pteemo', httpOptions);
+  }
+
+  getMatchHistory(): Observable<MatchHistory> {
+    return this.httpClient.get<MatchHistory>('http://localhost:9090/fakeData', httpOptions);
   }
 }
